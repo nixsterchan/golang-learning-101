@@ -57,15 +57,18 @@ func (d deck) shuffle() {
 		newPosition := r.Intn(len(d) - 1)
 		d[i], d[newPosition] = d[newPosition], d[i]
 	}
+	fmt.Println("Deck has been shuffled.")
 }
 
 // Function that utilizes slices to return part of the deck depending on the provided hand size and the rest of the remaining cards
 func deal(d deck, handSize int) (deck, deck) {
+	fmt.Printf("Dealing a hand of size %v", handSize)
 	return d[:handSize], d[handSize:]
 }
 
 // This function will help with reading out a string from a provided file, and convert it into a deck if properly formatted
 func newDeckFromFile(filename string) deck {
+	fmt.Printf("Attempting to read and retrieve a deck from the file: %v", filename)
 	// First read out the byte slice via os package's readfile
 	bs, err := os.ReadFile(filename)
 
@@ -82,5 +85,6 @@ func newDeckFromFile(filename string) deck {
 	s := strings.Split(string(bs), ",")
 
 	// Then we create the deck variable and return
+	fmt.Println("Successfully read file and generated deck.")
 	return deck(s)
 }
