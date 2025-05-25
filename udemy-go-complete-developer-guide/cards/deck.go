@@ -42,6 +42,7 @@ func (d deck) toString() string {
 // Writes out the deck as a string to a file with the given filename. Basically uses the os package, where the
 // deck type is converted to a string, then to a slice of bytes and then passed into the WriteFile function. Lastly the permission type is stated
 func (d deck) saveToFile(filename string) error {
+	fmt.Printf("Saving file to path:%v.\n", filename)
 	return os.WriteFile(filename, []byte(d.toString()), 0666)
 }
 
@@ -62,13 +63,13 @@ func (d deck) shuffle() {
 
 // Function that utilizes slices to return part of the deck depending on the provided hand size and the rest of the remaining cards
 func deal(d deck, handSize int) (deck, deck) {
-	fmt.Printf("Dealing a hand of size %v", handSize)
+	fmt.Printf("Dealing a hand of size %v.\n", handSize)
 	return d[:handSize], d[handSize:]
 }
 
 // This function will help with reading out a string from a provided file, and convert it into a deck if properly formatted
 func newDeckFromFile(filename string) deck {
-	fmt.Printf("Attempting to read and retrieve a deck from the file: %v", filename)
+	fmt.Printf("Attempting to read and retrieve a deck from the file: %v.\n", filename)
 	// First read out the byte slice via os package's readfile
 	bs, err := os.ReadFile(filename)
 
