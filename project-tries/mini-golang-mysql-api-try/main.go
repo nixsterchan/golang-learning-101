@@ -28,6 +28,10 @@ func main() {
 	if dsn == "" {
 		log.Fatal("MYSQL_DSN env variable could not be found. Please ensure it is available before running again")
 	}
+	port := os.Getenv("API_PORT")
+	if port == "" {
+		log.Fatal("API_PORT env variable could not be found. Please ensure it is available before running again")
+	}
 
 	// Set a loop that retries connection to the DB up to X number of times with x-second delay. Set the environment variables as you see fit
 	for i := 0; i < conn_retries; i++ {
@@ -62,8 +66,8 @@ func main() {
 	}
 
 	http.HandleFunc("/items", itemsHandler)
-	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Printf("Server running on :%v", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 // This will handle the different requests types sent in. For now it will handle for POST and GET and throw a warning if some other method was sent in.
