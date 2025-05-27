@@ -10,9 +10,9 @@ services:
     command: go build -o main.exe
 
   mysql:
-    restart: unless-stopped
     image: mysql:8.0
     container_name: mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -26,18 +26,18 @@ services:
       timeout: 5s
       retries: 5
   api-runner:
+    build:
+      context: .
+      target: runtime
     restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
-      build:
-        context: .
-        target: runtime
-      environment:
-        - MYSQL_DSN=root:${MYSQL_ROOT_PASSWORD}@tcp(mysql:${MYSQL_PORT})/${MYSQL_DATABASE}
-        - API_PORT=${API_PORT}
-      port:
-        - "${API_PORT}:${API_PORT}"
+    environment:
+      - MYSQL_DSN=${MYSQL_DSN}
+      - API_PORT=${API_PORT}
+    ports:
+      - "${API_PORT}:${API_PORT}"
 
   volumes:
     mysql-data
