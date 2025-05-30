@@ -1,14 +1,18 @@
 version: "3.8"
 
 services:
-  api-builder:
+  api-runner:
     build:
       context: .
-      target: builder
-    volumes:
-      - .:/app
-    command: go build -o main.exe
-
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - MYSQL_DSN=${MYSQL_DSN}
+      - API_PORT=${API_PORT}
+    ports:
+      - "${API_PORT}:${API_PORT}"
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -25,19 +29,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  api-runner:
-    build:
-      context: .
-      target: runtime
-    restart: unless-stopped
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      - MYSQL_DSN=${MYSQL_DSN}
-      - API_PORT=${API_PORT}
-    ports:
-      - "${API_PORT}:${API_PORT}"
+  
 
   volumes:
     mysql-data
